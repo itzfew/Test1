@@ -93,7 +93,7 @@
         }
 
         img {
-            max-width: 80px;
+            max-width: 100px;
             height: auto;
         }
 
@@ -114,12 +114,6 @@
             color: #000;
         }
 
-        .explanation-button-container {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-        }
-
         .explanation-content {
             margin-top: 10px;
             font-style: italic;
@@ -128,7 +122,7 @@
         }
 
         .explanation-content.open {
-            background-color: #FFF59D; /* Yellow background */
+            background-color: #FFF59D;
             padding: 10px;
             border-radius: 5px;
             margin-top: 10px;
@@ -166,71 +160,86 @@
             cursor: not-allowed;
         }
 
-        .navigation-buttons button:focus {
-            outline: none;
-        }
-
         .navigation-buttons button:first-child {
-            background-color: #dc3545; /* Red for Previous */
+            background-color: #dc3545;
         }
 
         .navigation-buttons button:last-child {
-            background-color: #28a745; /* Green for Submit */
+            background-color: #28a745;
         }
 
         .navigation-buttons button:first-child:hover {
-            background-color: #c82333; /* Darker Red for Previous */
+            background-color: #c82333;
         }
 
         .navigation-buttons button:last-child:hover {
-            background-color: #218838; /* Darker Green for Submit */
+            background-color: #218838;
         }
 
-        /* Slide Menu Style */
+        /* Slide Menu */
         #menu {
             position: fixed;
             top: 0;
-            right: -250px;
+            right: -260px;
             width: 250px;
             height: 100%;
             background-color: #333;
             color: white;
             padding: 15px;
             transition: right 0.3s ease;
-        }
-
-        #menu ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        #menu ul li {
-            padding: 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #444;
-        }
-
-        #menu ul li:hover {
-            background-color: #444;
-        }
-
-        .open-slide-menu {
-            font-size: 24px;
-            cursor: pointer;
+            display: none;
         }
 
         #menu.active {
+            display: block;
             right: 0;
         }
+
+        /* Grid for Question Navigation */
+        #question-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            gap: 5px;
+            padding: 10px;
+        }
+
+        #question-list div {
+            text-align: center;
+            background-color: #444;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            color: white;
+        }
+
+        #question-list div:hover {
+            background-color: #555;
+        }
+
+        /* Grid Menu Toggle Button */
+        .open-slide-menu {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            background-color: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        }
+
     </style>
 </head>
 <body>
     <div class="quiz-title" id="quiz-title"></div>
     <select id="subject-dropdown"></select>
     <div id="quiz-container"></div>
+
     <div id="menu">
-        <ul id="question-list"></ul>
+        <div id="question-list"></div>
     </div>
+
     <div class="open-slide-menu">
         <i class="fas fa-th"></i>
     </div>
@@ -249,7 +258,6 @@
 
         const jsonUrl = `https://raw.githubusercontent.com/itzfew/Quizes/refs/heads/main/pyq/${metaId}.json`;
 
-        // Fetch the JSON data
         fetch(jsonUrl)
             .then(response => response.json())
             .then(data => {
@@ -259,7 +267,6 @@
             })
             .catch(error => console.error('Error fetching the JSON data:', error));
 
-        // Populate subject dropdown
         function populateSubjectDropdown() {
             const subjectDropdown = document.getElementById('subject-dropdown');
             quizData.forEach((subject, index) => {
@@ -268,173 +275,26 @@
                 option.textContent = subject.title;
                 subjectDropdown.appendChild(option);
             });
-
             subjectDropdown.onchange = () => {
                 currentQuestionIndex = 0;
                 displayQuestion();
             };
         }
 
-        // Display Question
-        function displayQuestion() {
-            const quizContainer = document.getElementById('quiz-container');
-            quizContainer.innerHTML = '';
-
-            const subjectIndex = document.getElementById('subject-dropdown').value;
-            const subject = quizData[subjectIndex];
-            const question = subject.questions[currentQuestionIndex];
-            const questionElement = document.createElement('div');
-            questionElement.className = 'question';
-
-            const questionNumber = document.createElement('div');
-            questionNumber.className = 'question-number';
-            questionNumber.textContent = `Question ${currentQuestionIndex + 1}:`;
-            questionElement.appendChild(questionNumber);
-
-            const questionContent = document.createElement('div');
-            questionContent.className = 'question-content';
-            questionContent.innerHTML = question.content.replace(/\$\$(.*?)\$\$/g, (match, p1) => {
-                return `<span class="mathjax-inline">$$${p1}$$</span>`;
-            });
-            questionElement.appendChild(questionContent);
-
-            const optionsList = document.createElement('ul');
-            optionsList.className = 'options';
-
-            question.options.forEach(option => {
-                const optionItem = document.createElement('li');
-                const optionLabel = document.createElement('label');
-                const optionInput = document.createElement('input');
-
-                optionInput.type = 'radio';
-                optionInput.name = `question${question.question_id}`;
-                optionInput.value = option.identifier;
-                if (userResponses[question.question_id] === option.identifier) {
-                    optionInput.checked = true;
-                }
-
-                optionLabel.appendChild(optionInput);
-                optionLabel.innerHTML += option.content;
-                optionItem.appendChild(optionLabel);
-                optionsList.appendChild(optionItem);
-            });
-
-            questionElement.appendChild(optionsList);
-
-            const explanationButton = document.createElement('button');
-            explanationButton.className = 'explanation-button';
-            explanationButton.textContent = 'Show Explanation';
-            explanationButton.onclick = () => toggleExplanation(questionElement);
-            questionElement.appendChild(explanationButton);
-
-            const explanationContent = document.createElement('div');
-            explanationContent.className = 'explanation-content';
-            explanationContent.innerHTML = `Explanation: ${question.explanation || 'No explanation available.'}`;
-            questionElement.appendChild(explanationContent);
-
-            quizContainer.appendChild(questionElement);
-
-            const navigationButtons = document.createElement('div');
-            navigationButtons.className = 'navigation-buttons';
-
-            const prevButton = document.createElement('button');
-            prevButton.textContent = 'Previous';
-            prevButton.disabled = currentQuestionIndex === 0;
-            prevButton.onclick = () => {
-                currentQuestionIndex--;
-                displayQuestion();
-            };
-
-            const nextButton = document.createElement('button');
-            nextButton.textContent = 'Next';
-            nextButton.onclick = () => {
-                currentQuestionIndex++;
-                displayQuestion();
-            };
-
-            const submitButton = document.createElement('button');
-            submitButton.textContent = 'Submit';
-            submitButton.onclick = () => showAnswerFeedback(question, questionElement);
-
-            navigationButtons.appendChild(prevButton);
-            navigationButtons.appendChild(nextButton);
-            navigationButtons.appendChild(submitButton);
-
-            quizContainer.appendChild(navigationButtons);
-
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-
-            updateQuestionList();
-        }
-
-        // Update the Question List for navigation
         function updateQuestionList() {
             const questionList = document.getElementById('question-list');
-            const subjectIndex = document.getElementById('subject-dropdown').value;
-            const subject = quizData[subjectIndex];
             questionList.innerHTML = '';
-
-            subject.questions.forEach((_, index) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `Question ${index + 1}`;
-                listItem.onclick = () => {
+            quizData[0].questions.forEach((_, index) => {
+                const number = document.createElement('div');
+                number.textContent = index + 1;
+                number.onclick = () => {
                     currentQuestionIndex = index;
                     displayQuestion();
-                    document.getElementById('menu').classList.remove('active');
                 };
-                questionList.appendChild(listItem);
+                questionList.appendChild(number);
             });
         }
 
-        // Toggle Explanation visibility
-        function toggleExplanation(questionElement) {
-            const explanationContent = questionElement.querySelector('.explanation-content');
-            explanationContent.classList.toggle('open');
-        }
-
-        // Show answer feedback and save response
-        function showAnswerFeedback(question, questionElement) {
-            const selectedOption = document.querySelector(`input[name="question${question.question_id}"]:checked`);
-            const feedback = document.createElement('div');
-            feedback.className = 'correct-answer';
-            const options = document.querySelectorAll(`input[name="question${question.question_id}"]`);
-            const correctOptionValue = question.correct_options[0];
-
-            if (selectedOption) {
-                const selectedOptionValue = selectedOption.value;
-
-                if (selectedOptionValue === correctOptionValue) {
-                    feedback.innerHTML = "You are correct!";
-                    feedback.style.color = 'green';
-                } else {
-                    feedback.innerHTML = `You selected the wrong answer. The correct answer is: Option ${correctOptionValue}`;
-                    feedback.style.color = 'red';
-                }
-
-                // Save the response to local storage
-                userResponses[question.question_id] = selectedOptionValue;
-                localStorage.setItem('userResponses', JSON.stringify(userResponses));
-            } else {
-                feedback.innerHTML = `You did not select an option, but the correct answer is: Option ${correctOptionValue}`;
-                feedback.style.color = 'red';
-            }
-
-            questionElement.appendChild(feedback);
-
-            options.forEach(option => {
-                const optionItem = option.closest('li');
-                if (option.value === correctOptionValue) {
-                    optionItem.style.backgroundColor = 'green';
-                    optionItem.style.color = 'white';
-                } else if (option.checked) {
-                    optionItem.style.backgroundColor = 'red';
-                    optionItem.style.color = 'white';
-                }
-                option.disabled = true;
-            });
-        }
-
-        // Slide menu toggle
         document.querySelector('.open-slide-menu').onclick = () => {
             document.getElementById('menu').classList.toggle('active');
         };
