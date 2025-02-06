@@ -9,126 +9,274 @@
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
 
-        .header {
-            display: flex;
-            align-items: center;
-            background: #007bff;
-            color: white;
-            padding: 10px;
-        }
+/* Adjust the rest of the page below the header */
+main {
+    margin-top: 80px; /* Add margin to avoid content hiding behind the header */
+    padding: 20px;
+}
 
-        .menu-icon {
-            font-size: 24px;
-            margin-right: 15px;
-            cursor: pointer;
-        }
+.quiz-title {
+    font-size: 1.5em;
+    margin: 5px 0; /* Add a margin on top to give space between header and title */
+    color: #333;
+    text-align: center;
+    border: 2px solid black;
+}
 
-        .quiz-title {
-            font-size: 1.5em;
-            flex-grow: 1;
-            text-align: center;
-        }
+.question {
+    margin-bottom: 30px;
+    padding: 3px;
+    border-bottom: 1px solid #ccc;
+    overflow-x: auto;
+    word-wrap: break-word;
+    white-space: normal;
+}
 
-        /* Sidebar (Grid Navigation) */
-        .sidebar {
-            position: fixed;
-            left: -250px;
-            top: 0;
-            width: 250px;
-            height: 100%;
-            background: #fff;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-            overflow-y: auto;
-            transition: 0.3s;
-            padding: 20px;
-        }
+.question-number {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 10px;
+}
 
-        .sidebar.open {
-            left: 0;
-        }
+.question-content {
+    margin-bottom: 15px;
+    word-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
+    overflow-x: auto;
+}
+/* Ensure all images within questions and explanations have a maximum width */
+.question-content img, .explanation-content img {
+    max-width: 70%;  /* Limit the image width to 70% of the container */
+    height: auto;    /* Maintain aspect ratio */
+    display: block;  /* Make the image block-level to center it */
+    margin: 0 auto;  /* Center the image horizontally */
+    max-height: 40vh; /* Limit the height of the image to 40% of the viewport height */
+    vertical-align: baseline; /* Align image with text */
+}
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
-        }
+/* Optional: If you want to apply a lightbox or hover effect */
+.question-content img:hover, .explanation-content img:hover {
+    cursor: pointer;
+    opacity: 0.8; /* Slightly fade image when hovered */
+    transition: opacity 0.3s ease; /* Smooth hover transition */
+}
 
-        .grid-item {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ccc;
-            cursor: pointer;
-        }
+.options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+}
 
-        .grid-item.correct { background-color: green; color: white; }
-        .grid-item.wrong { background-color: red; color: white; }
+.options li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 calc(50% - 10px); /* Makes two options per row */
+    max-width: 45%;
+    min-width: 150px;
+    text-align: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    word-wrap: break-word;
+    white-space: normal;
+    background-color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
 
-        /* Quiz Content */
-        #quiz-container {
-            padding: 20px;
-        }
+.options li img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: auto;
+}
 
-        .question {
-            background: #fff;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        }
+.options li:hover {
+    background-color: #f1f1f1;
+}
 
-        .options li {
-            list-style: none;
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            cursor: pointer;
-        }
+/* Ensure a single-column layout on small screens */
+@media (max-width: 600px) {
+    .options {
+        flex-direction: column;
+    }
+    .options li {
+        max-width: 100%;
+    }
+}
 
-        .options li.correct { background-color: green; color: white; }
-        .options li.wrong { background-color: red; color: white; }
+.options input[type="radio"] {
+    margin-right: 10px;
+}
 
-        .navigation-buttons {
-            display: flex;
-            justify-content: space-between;
-        }
+.question-id {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #555;
+}
 
-        .explanation-content {
-            display: none;
-            background: #ffeb3b;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
-        }
+.correct-answer {
+    margin-top: 10px;
+    font-weight: bold;
+    color: green;
+}
+
+#subject-dropdown {
+    display: block;
+    margin: 20px auto;
+    padding: 10px;
+    font-size: 1em;
+}
+
+.explanation-button {
+    margin-top: 10px;
+    background-color: #ffffff;
+    color: black;
+    border: 2px solid #ccc;
+    cursor: pointer;
+    padding: 8px 16px;
+    font-size: 1em;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.explanation-button:hover {
+    background-color: #f1f1f1;
+    color: #000;
+}
+
+.explanation-button-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.explanation-content {
+    margin-top: 10px;
+    font-style: italic;
+    color: #777;
+    display: none;
+}
+
+.explanation-content.open {
+    background-color: #FFF59D; /* Yellow background */
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-style: italic;
+    color: #777;
+    display: block;
+}
+
+.mathjax-inline {
+    white-space: nowrap;
+    display: inline-block;
+    font-size: 1.1em;
+}
+
+.question-content span {
+    display: inline-block;
+}
+
+/* Prevent the explanation button and content from being hidden */
+.question .explanation-button,
+.question .explanation-content {
+    visibility: visible;
+    position: relative;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding: 10px;
+}
+
+.navigation-buttons button {
+    padding: 12px 24px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.navigation-buttons button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.navigation-buttons button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.navigation-buttons button:focus {
+    outline: none;
+}
+
+.navigation-buttons button:first-child {
+    background-color: #dc3545; /* Red for Previous */
+}
+
+.navigation-buttons button:last-child {
+    background-color: #28a745; /* Green for Submit */
+}
+
+.navigation-buttons button:first-child:hover {
+    background-color: #c82333; /* Darker Red for Previous */
+}
+
+.navigation-buttons button:last-child:hover {
+    background-color: #218838; /* Darker Green for Submit */
+}
+
+
+@media (max-width: 600px) {
+    body {
+        padding: 0px;
+    }
+
+    #quiz-container {
+        padding: 3px;
+    }
+
+    .submit-button {
+        padding: 10px;
+    }
+
+    .options li {
+        padding: 5px;
+    }
+
+}
 
     </style>
 </head>
 <body>
-
-    <div class="header">
-        <i class="fas fa-th menu-icon" onclick="toggleSidebar()"></i>
-        <div class="quiz-title" id="quiz-title"></div>
-    </div>
-
-    <div class="sidebar" id="sidebar">
-        <h3>Jump to Question</h3>
-        <div class="grid-container" id="grid-container"></div>
-    </div>
-
+    <div class="quiz-title" id="quiz-title"></div>
     <select id="subject-dropdown"></select>
     <div id="quiz-container"></div>
 
     <script>
         let currentQuestionIndex = 0;
         let quizData = [];
-        let answersCache = JSON.parse(localStorage.getItem('quizAnswers')) || {};
-
         const urlParams = new URLSearchParams(window.location.search);
         const title = urlParams.get('title');
         const metaId = urlParams.get('metaId');
@@ -139,19 +287,15 @@
 
         const jsonUrl = `https://raw.githubusercontent.com/itzfew/Quizes/refs/heads/main/pyq/${metaId}.json`;
 
+        // Fetch the JSON data
         fetch(jsonUrl)
             .then(response => response.json())
             .then(data => {
                 quizData = data;
                 populateSubjectDropdown();
                 displayQuestion();
-                renderQuestionGrid();
             })
             .catch(error => console.error('Error fetching the JSON data:', error));
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
 
         function populateSubjectDropdown() {
             const subjectDropdown = document.getElementById('subject-dropdown');
@@ -165,83 +309,156 @@
             subjectDropdown.onchange = () => {
                 currentQuestionIndex = 0;
                 displayQuestion();
-                renderQuestionGrid();
             };
         }
 
-        function displayQuestion(index = currentQuestionIndex) {
-            const quizContainer = document.getElementById('quiz-container');
-            quizContainer.innerHTML = '';
+        function displayQuestion() {
+    const quizContainer = document.getElementById('quiz-container');
+    quizContainer.innerHTML = '';
 
-            const subjectIndex = document.getElementById('subject-dropdown').value;
-            const subject = quizData[subjectIndex];
+    const subjectIndex = document.getElementById('subject-dropdown').value;
+    const subject = quizData[subjectIndex];
 
-            if (!subject || !subject.questions[index]) return;
+    const question = subject.questions[currentQuestionIndex];
 
-            const question = subject.questions[index];
-            currentQuestionIndex = index;
+    const questionElement = document.createElement('div');
+    questionElement.className = 'question';
 
-            const questionElement = document.createElement('div');
-            questionElement.className = 'question';
+    const questionNumber = document.createElement('div');
+    questionNumber.className = 'question-number';
+    questionNumber.textContent = `Question ${currentQuestionIndex + 1}:`;
+    questionElement.appendChild(questionNumber);
 
-            questionElement.innerHTML = `
-                <div><strong>Question ${index + 1}:</strong> ${question.content}</div>
-                <ul class="options">
-                    ${question.options.map(option => `
-                        <li data-id="${option.identifier}" onclick="selectAnswer('${question.question_id}', '${option.identifier}', '${question.correct_options[0]}', this)">
-                            ${option.content}
-                        </li>
-                    `).join('')}
-                </ul>
-                <button onclick="toggleExplanation()">Show Explanation</button>
-                <div class="explanation-content">${question.explanation || 'No explanation available.'}</div>
-            `;
+    const questionContent = document.createElement('div');
+    questionContent.className = 'question-content';
+    questionContent.innerHTML = question.content.replace(/\$\$(.*?)\$\$/g, (match, p1) => {
+        return `<span class="mathjax-inline">$$${p1}$$</span>`;
+    });
+    questionElement.appendChild(questionContent);
+
+    const optionsList = document.createElement('ul');
+    optionsList.className = 'options';
+
+    let containsImage = false;
+
+    question.options.forEach(option => {
+        const optionItem = document.createElement('li');
+        const optionLabel = document.createElement('label');
+        const optionInput = document.createElement('input');
+
+        optionInput.type = 'radio';
+        optionInput.name = `question${question.question_id}`;
+        optionInput.value = option.identifier;
+
+        optionLabel.appendChild(optionInput);
+
+        // Check if option contains an image
+        if (option.content.includes("<img")) {
+            containsImage = true;
+            optionLabel.innerHTML += option.content;
+        } else {
+            optionLabel.innerHTML += ` ${option.content}`;
+        }
+
+        optionItem.appendChild(optionLabel);
+        optionsList.appendChild(optionItem);
+    });
+
+    if (containsImage) {
+        optionsList.classList.add('image-grid');
+    }
+
+    questionElement.appendChild(optionsList);
+    quizContainer.appendChild(questionElement);
+
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+}
+
+            const explanationButton = document.createElement('button');
+            explanationButton.className = 'explanation-button';
+            explanationButton.textContent = 'Show Explanation';
+            explanationButton.onclick = () => toggleExplanation(questionElement);
+            questionElement.appendChild(explanationButton);
+
+            const explanationContent = document.createElement('div');
+            explanationContent.className = 'explanation-content';
+            explanationContent.innerHTML = `Explanation: ${question.explanation || 'No explanation available.'}`;
+            questionElement.appendChild(explanationContent);
 
             quizContainer.appendChild(questionElement);
+
+            const navigationButtons = document.createElement('div');
+            navigationButtons.className = 'navigation-buttons';
+
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentQuestionIndex === 0;
+            prevButton.onclick = () => {
+                currentQuestionIndex--;
+                displayQuestion();
+            };
+
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.onclick = () => {
+                currentQuestionIndex++;
+                displayQuestion();
+            };
+
+            const submitButton = document.createElement('button');
+            submitButton.textContent = 'Submit';
+            submitButton.onclick = () => showAnswerFeedback(question, questionElement);
+
+            navigationButtons.appendChild(prevButton);
+            navigationButtons.appendChild(nextButton);
+            navigationButtons.appendChild(submitButton);
+
+            quizContainer.appendChild(navigationButtons);
+
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
 
-        function renderQuestionGrid() {
-            const gridContainer = document.getElementById('grid-container');
-            gridContainer.innerHTML = '';
-
-            const subjectIndex = document.getElementById('subject-dropdown').value;
-            const subject = quizData[subjectIndex];
-
-            subject.questions.forEach((_, i) => {
-                const gridItem = document.createElement('div');
-                gridItem.className = 'grid-item';
-                gridItem.textContent = i + 1;
-                gridItem.onclick = () => displayQuestion(i);
-
-                if (answersCache[i]) {
-                    gridItem.classList.add(answersCache[i] === 'correct' ? 'correct' : 'wrong');
-                }
-
-                gridContainer.appendChild(gridItem);
-            });
+        function toggleExplanation(questionElement) {
+            const explanationContent = questionElement.querySelector('.explanation-content');
+            explanationContent.classList.toggle('open');
         }
 
-        function selectAnswer(qId, selectedOption, correctOption, element) {
-            const options = document.querySelectorAll(`.options li`);
-            options.forEach(opt => opt.classList.remove('correct', 'wrong'));
+        function showAnswerFeedback(question, questionElement) {
+            const selectedOption = document.querySelector(`input[name="question${question.question_id}"]:checked`);
+            const feedback = document.createElement('div');
+            feedback.className = 'correct-answer';
+            const options = document.querySelectorAll(`input[name="question${question.question_id}"]`);
+            const correctOptionValue = question.correct_options[0];
 
-            if (selectedOption === correctOption) {
-                element.classList.add('correct');
-                answersCache[currentQuestionIndex] = 'correct';
+            if (selectedOption) {
+                const selectedOptionValue = selectedOption.value;
+
+                if (selectedOptionValue === correctOptionValue) {
+                    feedback.innerHTML = "You are correct!";
+                    feedback.style.color = 'green';
+                } else {
+                    feedback.innerHTML = `You selected the wrong answer. The correct answer is: Option ${correctOptionValue}`;
+                    feedback.style.color = 'red';
+                }
             } else {
-                element.classList.add('wrong');
-                answersCache[currentQuestionIndex] = 'wrong';
+                feedback.innerHTML = `You did not select an option, but the correct answer is: Option ${correctOptionValue}`;
+                feedback.style.color = 'red';
             }
 
-            localStorage.setItem('quizAnswers', JSON.stringify(answersCache));
-            renderQuestionGrid();
-        }
+            questionElement.appendChild(feedback);
 
-        function toggleExplanation() {
-            document.querySelector('.explanation-content').classList.toggle('open');
+            options.forEach(option => {
+                const optionItem = option.closest('li');
+                if (option.value === correctOptionValue) {
+                    optionItem.style.backgroundColor = 'green';
+                    optionItem.style.color = 'white';
+                } else if (option.checked) {
+                    optionItem.style.backgroundColor = 'red';
+                    optionItem.style.color = 'white';
+                }
+                option.disabled = true;
+            });
         }
     </script>
-
 </body>
 </html>
