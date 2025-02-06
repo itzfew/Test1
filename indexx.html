@@ -9,27 +9,27 @@
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
 
-/* Adjust the rest of the page below the header */
-main {
-    margin-top: 80px; /* Add margin to avoid content hiding behind the header */
-    padding: 20px;
-}
+        main {
+            margin-top: 80px;
+            padding: 20px;
+        }
 
-.quiz-title {
-    font-size: 1.5em;
-    margin: 5px 0; /* Add a margin on top to give space between header and title */
-    color: #333;
-    text-align: center;
-    border: 2px solid black;
-}
-#question-grid {
+        .quiz-title {
+            font-size: 1.5em;
+            margin: 5px 0;
+            color: #333;
+            text-align: center;
+            border: 2px solid black;
+        }
+
+        #question-grid {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
@@ -67,212 +67,120 @@ main {
 
         .current-question {
             background-color: yellow !important;
-        } 
-.question {
-    margin-bottom: 30px;
-    padding: 3px;
-    border-bottom: 1px solid #ccc;
-    overflow-x: auto;
-    word-wrap: break-word;
-    white-space: normal;
-}
+        }
 
-.question-number {
-    font-weight: bold;
-    font-size: 1.2em;
-    color: #333;
-    margin-bottom: 10px;
-}
+        .question {
+            margin-bottom: 30px;
+            padding: 3px;
+            border-bottom: 1px solid #ccc;
+            overflow-x: auto;
+            word-wrap: break-word;
+            white-space: normal;
+        }
 
-.question-content {
-    margin-bottom: 15px;
-    word-wrap: break-word;
-    white-space: normal;
-    max-width: 100%;
-    overflow-x: auto;
-}
-/* Ensure all images within questions and explanations have a maximum width */
-.question-content img, .explanation-content img {
-    max-width: 70%;  /* Limit the image width to 70% of the container */
-    height: auto;    /* Maintain aspect ratio */
-    display: block;  /* Make the image block-level to center it */
-    margin: 0 auto;  /* Center the image horizontally */
-    max-height: 40vh; /* Limit the height of the image to 40% of the viewport height */
-    vertical-align: baseline; /* Align image with text */
-}
+        .question-number {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
 
-/* Optional: If you want to apply a lightbox or hover effect */
-.question-content img:hover, .explanation-content img:hover {
-    cursor: pointer;
-    opacity: 0.8; /* Slightly fade image when hovered */
-    transition: opacity 0.3s ease; /* Smooth hover transition */
-}
+        .question-content img, .explanation-content img {
+            max-width: 70%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            max-height: 40vh;
+        }
 
-.options li {
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    overflow-x: auto;
-    word-wrap: break-word;
-    white-space: normal;
-}
+        .options li {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
 
-.options label {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-}
+        .options label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
 
-.options input[type="radio"] {
-    margin-right: 10px;
-}
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
 
-.question-id {
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #555;
-}
+        .correct-answer {
+            margin-top: 10px;
+            font-weight: bold;
+            color: green;
+        }
 
-.correct-answer {
-    margin-top: 10px;
-    font-weight: bold;
-    color: green;
-}
+        #subject-dropdown {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 1em;
+        }
 
-#subject-dropdown {
-    display: block;
-    margin: 20px auto;
-    padding: 10px;
-    font-size: 1em;
-}
+        .explanation-button {
+            margin-top: 10px;
+            background-color: #ffffff;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 1em;
+            border-radius: 5px;
+            text-align: center;
+        }
 
-.explanation-button {
-    margin-top: 10px;
-    background-color: #ffffff;
-    color: black;
-    border: 2px solid #ccc;
-    cursor: pointer;
-    padding: 8px 16px;
-    font-size: 1em;
-    border-radius: 5px;
-    text-align: center;
-}
+        .explanation-button:hover {
+            background-color: #f1f1f1;
+        }
 
-.explanation-button:hover {
-    background-color: #f1f1f1;
-    color: #000;
-}
+        .explanation-content {
+            margin-top: 10px;
+            background-color: #FFF59D;
+            padding: 10px;
+            border-radius: 5px;
+            font-style: italic;
+            color: #777;
+            display: none;
+        }
 
-.explanation-button-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 10px;
+        }
 
-.explanation-content {
-    margin-top: 10px;
-    font-style: italic;
-    color: #777;
-    display: none;
-}
+        .navigation-buttons button {
+            padding: 12px 24px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            transition: background-color 0.3s, transform 0.3s;
+        }
 
-.explanation-content.open {
-    background-color: #FFF59D; /* Yellow background */
-    padding: 10px;
-    border-radius: 5px;
-    margin-top: 10px;
-    font-style: italic;
-    color: #777;
-    display: block;
-}
+        .navigation-buttons button:first-child {
+            background-color: #dc3545;
+        }
 
-.mathjax-inline {
-    white-space: nowrap;
-    display: inline-block;
-    font-size: 1.1em;
-}
+        .navigation-buttons button:last-child {
+            background-color: #28a745;
+        }
 
-.question-content span {
-    display: inline-block;
-}
+        .navigation-buttons button:hover {
+            transform: scale(1.05);
+        }
 
-/* Prevent the explanation button and content from being hidden */
-.question .explanation-button,
-.question .explanation-content {
-    visibility: visible;
-    position: relative;
-}
-
-.navigation-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    margin-bottom: 30px;
-    padding: 10px;
-}
-
-.navigation-buttons button {
-    padding: 12px 24px;
-    font-size: 1.1em;
-    border-radius: 5px;
-    cursor: pointer;
-    border: 1px solid #ccc;
-    background-color: #007bff;
-    color: white;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.navigation-buttons button:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-}
-
-.navigation-buttons button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-.navigation-buttons button:focus {
-    outline: none;
-}
-
-.navigation-buttons button:first-child {
-    background-color: #dc3545; /* Red for Previous */
-}
-
-.navigation-buttons button:last-child {
-    background-color: #28a745; /* Green for Submit */
-}
-
-.navigation-buttons button:first-child:hover {
-    background-color: #c82333; /* Darker Red for Previous */
-}
-
-.navigation-buttons button:last-child:hover {
-    background-color: #218838; /* Darker Green for Submit */
-}
-
-
-@media (max-width: 600px) {
-    body {
-        padding: 0px;
-    }
-
-    #quiz-container {
-        padding: 3px;
-    }
-
-    .submit-button {
-        padding: 10px;
-    }
-
-    .options li {
-        padding: 5px;
-    }
-
-}
-
+        @media (max-width: 600px) {
+            .options li {
+                padding: 5px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -294,7 +202,6 @@ main {
 
         const jsonUrl = `https://raw.githubusercontent.com/itzfew/Quizes/refs/heads/main/pyq/${metaId}.json`;
 
-        // Fetch the JSON data
         fetch(jsonUrl)
             .then(response => response.json())
             .then(data => {
@@ -318,22 +225,6 @@ main {
                 displayQuestion();
             };
         }
-        function generateQuestionGrid() {
-            const gridContainer = document.getElementById('question-grid');
-            gridContainer.innerHTML = '';
-
-            quizData.forEach((_, index) => {
-                const box = document.createElement('div');
-                box.className = 'question-number-box';
-                box.textContent = index + 1;
-                box.onclick = () => {
-                    currentQuestionIndex = index;
-                    displayQuestion();
-                };
-                gridContainer.appendChild(box);
-            });
-        }
- 
 
         function displayQuestion() {
             const quizContainer = document.getElementById('quiz-container');
@@ -347,125 +238,41 @@ main {
             const questionElement = document.createElement('div');
             questionElement.className = 'question';
 
-            const questionNumber = document.createElement('div');
-            questionNumber.className = 'question-number';
-            questionNumber.textContent = `Question ${currentQuestionIndex + 1}:`;
-            questionElement.appendChild(questionNumber);
-
-            const questionContent = document.createElement('div');
-            questionContent.className = 'question-content';
-            questionContent.innerHTML = question.content.replace(/\$\$(.*?)\$\$/g, (match, p1) => {
-                return `<span class="mathjax-inline">$$${p1}$$</span>`;
-            });
-            questionElement.appendChild(questionContent);
-
-            const optionsList = document.createElement('ul');
-            optionsList.className = 'options';
-
-            question.options.forEach(option => {
-                const optionItem = document.createElement('li');
-                const optionLabel = document.createElement('label');
-                const optionInput = document.createElement('input');
-
-                optionInput.type = 'radio';
-                optionInput.name = `question${question.question_id}`;
-                optionInput.value = option.identifier;
-
-                optionLabel.appendChild(optionInput);
-                optionLabel.innerHTML += option.content;
-                optionItem.appendChild(optionLabel);
-                optionsList.appendChild(optionItem);
-            });
-
-            questionElement.appendChild(optionsList);
-
-            const explanationButton = document.createElement('button');
-            explanationButton.className = 'explanation-button';
-            explanationButton.textContent = 'Show Explanation';
-            explanationButton.onclick = () => toggleExplanation(questionElement);
-            questionElement.appendChild(explanationButton);
-
-            const explanationContent = document.createElement('div');
-            explanationContent.className = 'explanation-content';
-            explanationContent.innerHTML = `Explanation: ${question.explanation || 'No explanation available.'}`;
-            questionElement.appendChild(explanationContent);
+            questionElement.innerHTML = `
+                <div class="question-number">Question ${currentQuestionIndex + 1}:</div>
+                <div class="question-content">${question.content}</div>
+                <ul class="options">${question.options.map(option => `
+                    <li>
+                        <label>
+                            <input type="radio" name="question${question.question_id}" value="${option.identifier}">
+                            ${option.content}
+                        </label>
+                    </li>`).join('')}
+                </ul>
+                <button class="explanation-button" onclick="toggleExplanation(this)">Show Explanation</button>
+                <div class="explanation-content">Explanation: ${question.explanation || 'No explanation available.'}</div>
+                <div class="navigation-buttons">
+                    <button onclick="changeQuestion(-1)" ${currentQuestionIndex === 0 ? 'disabled' : ''}>Previous</button>
+                    <button onclick="changeQuestion(1)">Next</button>
+                    <button onclick="submitAnswer(${JSON.stringify(question)})">Submit</button>
+                </div>`;
 
             quizContainer.appendChild(questionElement);
-
-            const navigationButtons = document.createElement('div');
-            navigationButtons.className = 'navigation-buttons';
-
-            const prevButton = document.createElement('button');
-            prevButton.textContent = 'Previous';
-            prevButton.disabled = currentQuestionIndex === 0;
-            prevButton.onclick = () => {
-                currentQuestionIndex--;
-                displayQuestion();
-            };
-
-            const nextButton = document.createElement('button');
-            nextButton.textContent = 'Next';
-            nextButton.onclick = () => {
-                currentQuestionIndex++;
-                displayQuestion();
-            };
-
-            const submitButton = document.createElement('button');
-            submitButton.textContent = 'Submit';
-            submitButton.onclick = () => showAnswerFeedback(question, questionElement);
-
-            navigationButtons.appendChild(prevButton);
-            navigationButtons.appendChild(nextButton);
-            navigationButtons.appendChild(submitButton);
-
-            quizContainer.appendChild(navigationButtons);
-
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
 
-        function toggleExplanation(questionElement) {
-            const explanationContent = questionElement.querySelector('.explanation-content');
-            explanationContent.classList.toggle('open');
+        function toggleExplanation(button) {
+            button.nextElementSibling.classList.toggle('open');
         }
 
-        function showAnswerFeedback(question, questionElement) {
-            const selectedOption = document.querySelector(`input[name="question${question.question_id}"]:checked`);
-            const feedback = document.createElement('div');
-            feedback.className = 'correct-answer';
-            const options = document.querySelectorAll(`input[name="question${question.question_id}"]`);
-            const correctOptionValue = question.correct_options[0];
+        function changeQuestion(step) {
+            currentQuestionIndex += step;
+            displayQuestion();
+        }
 
-            if (selectedOption) {
-                const selectedOptionValue = selectedOption.value;
-
-                if (selectedOptionValue === correctOptionValue) {
-                    feedback.innerHTML = "You are correct!";
-                    feedback.style.color = 'green';
-                } else {
-                    feedback.innerHTML = `You selected the wrong answer. The correct answer is: Option ${correctOptionValue}`;
-                    feedback.style.color = 'red';
-                }
-            } else {
-                feedback.innerHTML = `You did not select an option, but the correct answer is: Option ${correctOptionValue}`;
-                feedback.style.color = 'red';
-            }
-
-            questionElement.appendChild(feedback);
-
-            options.forEach(option => {
-                const optionItem = option.closest('li');
-                if (option.value === correctOptionValue) {
-                    optionItem.style.backgroundColor = 'green';
-                    optionItem.style.color = 'white';
-                } else if (option.checked) {
-                    optionItem.style.backgroundColor = 'red';
-                    optionItem.style.color = 'white';
-                }
-                option.disabled = true;
-            });
-        questionStatus[currentQuestionIndex] = selectedOption === correctOption ? 'correct' : 'incorrect';
-            generateQuestionGrid();
-        } 
+        function submitAnswer(question) {
+            alert("Answer submission logic goes here.");
+        }
     </script>
 </body>
 </html>
