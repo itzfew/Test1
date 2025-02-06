@@ -1,175 +1,210 @@
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
 
-        /* Adjust the rest of the page below the header */
-        main {
-            margin-top: 80px; /* Add margin to avoid content hiding behind the header */
-            padding: 20px;
-        }
-        .quiz-title {
-            font-size: 1.5em;
-            margin: 5px 0; /* Add a margin on top to give space between header and title */
-            color: #333;
-            text-align: center;
-            border: 2px solid black;
-        }
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
 
-        .question {
-            margin-bottom: 30px;
-            padding: 3px;
-            border-bottom: 1px solid #ccc;
-            overflow-x: auto;
-            word-wrap: break-word;
-            white-space: normal;
-        }
+/* Adjust the rest of the page below the header */
+main {
+    margin-top: 80px; /* Add margin to avoid content hiding behind the header */
+    padding: 20px;
+}
 
-        .question-number {
-            font-weight: bold;
-            font-size: 1.2em;
-            color: #333;
-            margin-bottom: 10px;
-        }
+.quiz-title {
+    font-size: 1.5em;
+    margin: 5px 0; /* Add a margin on top to give space between header and title */
+    color: #333;
+    text-align: center;
+    border: 2px solid black;
+}
 
-        .question-content {
-            margin-bottom: 15px;
-            word-wrap: break-word;
-            white-space: normal;
-            max-width: 100%;
-            overflow-x: auto;
-        }
+.question {
+    margin-bottom: 30px;
+    padding: 3px;
+    border-bottom: 1px solid #ccc;
+    overflow-x: auto;
+    word-wrap: break-word;
+    white-space: normal;
+}
 
-        .options li {
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-            word-wrap: break-word;
-            white-space: normal;
-        }
+.question-number {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 10px;
+}
 
-        .options label {
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
+.question-content {
+    margin-bottom: 15px;
+    word-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
+    overflow-x: auto;
+}
 
-        .options input[type="radio"] {
-            margin-right: 10px;
-        }
+.options li {
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    word-wrap: break-word;
+    white-space: normal;
+}
 
-        .question-id {
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #555;
-        }
+.options label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
 
-        .correct-answer {
-            margin-top: 10px;
-            font-weight: bold;
-            color: green;
-        }
+.options input[type="radio"] {
+    margin-right: 10px;
+}
 
-        #subject-dropdown {
-            display: block;
-            margin: 20px auto;
-            padding: 10px;
-            font-size: 1em;
-        }
+.question-id {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #555;
+}
 
-        img {
-            max-width: 100px;
-            height: auto;
-        }
+.correct-answer {
+    margin-top: 10px;
+    font-weight: bold;
+    color: green;
+}
 
-        .submit-button {
-            background-color: #000;
-            color: white;
-            padding: 10px 20px;
-            border: 1px solid white;
-            border-radius: 5px;
-            cursor: pointer;
-            position: fixed;
-            bottom: 0px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            z-index: 1000;
-        }
-
-        .explanation-button {
-            display: none;
-            margin-top: 10px;
-            background-color: white;
-            color: black;
-            border: 2px solid black;
-            cursor: pointer;
-            padding: 8px 16px;
-        }
-
-        .explanation-button:hover {
-            background-color: black;
-            color: white;
-        }
-
-        .explanation-button-container {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-        }
-
-        .explanation-content {
-            display: none;
-            margin-top: 10px;
-            font-style: italic;
-            color: #777;
-        }
-
-        .explanation-content.open {
+#subject-dropdown {
     display: block;
+    margin: 20px auto;
+    padding: 10px;
+    font-size: 1em;
+}
+
+.explanation-button {
+    margin-top: 10px;
+    background-color: #ffffff;
+    color: black;
+    border: 2px solid #ccc;
+    cursor: pointer;
+    padding: 8px 16px;
+    font-size: 1em;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.explanation-button:hover {
+    background-color: #f1f1f1;
+    color: #000;
+}
+
+.explanation-button-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.explanation-content {
+    margin-top: 10px;
+    font-style: italic;
+    color: #777;
+    display: none;
+}
+
+.explanation-content.open {
     background-color: #FFF59D; /* Yellow background */
     padding: 10px;
     border-radius: 5px;
     margin-top: 10px;
     font-style: italic;
     color: #777;
+    display: block;
+}
+
+.mathjax-inline {
+    white-space: nowrap;
+    display: inline-block;
+    font-size: 1.1em;
+}
+
+.question-content span {
+    display: inline-block;
+}
+
+/* Prevent the explanation button and content from being hidden */
+.question .explanation-button,
+.question .explanation-content {
+    visibility: visible;
+    position: relative;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding: 10px;
+}
+
+.navigation-buttons button {
+    padding: 12px 24px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.navigation-buttons button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.navigation-buttons button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.navigation-buttons button:focus {
+    outline: none;
+}
+
+.navigation-buttons button:first-child {
+    background-color: #dc3545; /* Red for Previous */
+}
+
+.navigation-buttons button:last-child {
+    background-color: #28a745; /* Green for Submit */
+}
+
+.navigation-buttons button:first-child:hover {
+    background-color: #c82333; /* Darker Red for Previous */
+}
+
+.navigation-buttons button:last-child:hover {
+    background-color: #218838; /* Darker Green for Submit */
 }
 
 
-        /* Prevent mathjax line breaks and ensure inline equations are rendered smoothly */
-        .mathjax-inline {
-            white-space: nowrap;
-            display: inline-block;
-            font-size: 1.1em;
-        }
+@media (max-width: 600px) {
+    body {
+        padding: 0px;
+    }
 
-        /* Ensuring that MathJax inline formulas don't break or overflow */
-        .question-content span {
-            display: inline-block;
-        }
+    #quiz-container {
+        padding: 3px;
+    }
 
-        @media (max-width: 600px) {
-            body {
-                padding: 0px;
-            }
+    .submit-button {
+        padding: 10px;
+    }
 
-            #quiz-container {
-                padding: 3px;
-            }
+    .options li {
+        padding: 5px;
+    }
 
-            .submit-button {
-                padding: 10px;
-            }
-
-            .options li {
-                padding: 5px;
-            }
-
-            img {
-                max-width: 80px;
-            }
 }
