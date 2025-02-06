@@ -15,138 +15,124 @@
             margin: 0;
             padding: 0;
         }
+
+        .header {
+            display: flex;
+            align-items: center;
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .menu-icon {
+            font-size: 1.5em;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .quiz-title {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background-color: #333;
+            color: white;
+            overflow-y: auto;
+            padding: 20px;
+            transition: 0.3s;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 10px;
+        }
+
+        .question-grid button {
+            padding: 10px;
+            background-color: #444;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .question-grid button.answered {
+            background-color: green;
+        }
+
+        .close-btn {
+            background: red;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
         main {
-            margin-top: 80px;
+            margin-top: 60px;
             padding: 20px;
         }
-        .quiz-title {
-            font-size: 1.5em;
-            margin: 5px 0;
-            color: #333;
-            text-align: center;
-            border: 2px solid black;
-            padding: 10px;
-        }
+
         .question {
-            margin-bottom: 30px;
-            padding: 10px;
-            border: 1px solid #ccc;
             background: white;
+            padding: 20px;
             border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .question-number {
-            font-weight: bold;
-            font-size: 1.2em;
-            color: #333;
-            margin-bottom: 10px;
-        }
+
         .options li {
             margin-bottom: 10px;
-            border: 1px solid #ccc;
             padding: 10px;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            background: white;
             cursor: pointer;
         }
-        .options li:hover {
-            background-color: #f1f1f1;
-        }
+
         .correct-answer {
             margin-top: 10px;
             font-weight: bold;
             color: green;
         }
-        #subject-dropdown {
-            display: block;
-            margin: 20px auto;
-            padding: 10px;
-            font-size: 1em;
-        }
-        .explanation-button {
-            margin-top: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 1em;
-            border-radius: 5px;
-        }
-        .explanation-button:hover {
-            background-color: #0056b3;
-        }
-        .explanation-content {
-            margin-top: 10px;
-            font-style: italic;
-            color: #777;
-            display: none;
-        }
-        .explanation-content.open {
-            display: block;
-        }
-        /* Slide Menu */
-        #menu {
-            position: fixed;
-            top: 0;
-            right: -260px;
-            width: 250px;
-            height: 100%;
-            background-color: #333;
-            color: white;
-            padding: 15px;
-            transition: right 0.3s ease;
-            display: none;
-        }
-        #menu.active {
-            display: block;
-            right: 0;
-        }
-        /* Grid for Question Navigation */
-        #question-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-            gap: 5px;
-            padding: 10px;
-        }
-        #question-list div {
-            text-align: center;
-            background-color: #444;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            color: white;
-        }
-        #question-list div:hover {
-            background-color: #555;
-        }
-        /* Grid Menu Toggle Button */
-        .open-slide-menu {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            font-size: 24px;
-            cursor: pointer;
-            background-color: white;
-            padding: 10px;
-            border-radius: 50%;
-            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
-        }
     </style>
 </head>
 <body>
-    <div class="quiz-title" id="quiz-title"></div>
-    <select id="subject-dropdown"></select>
-    <div id="quiz-container"></div>
-    <div id="menu">
-        <div id="question-list"></div>
+    <div class="header">
+        <i class="fas fa-th menu-icon" onclick="toggleSidebar()"></i>
+        <div class="quiz-title" id="quiz-title"></div>
     </div>
-    <div class="open-slide-menu">
-        <i class="fas fa-th"></i>
+
+    <div class="sidebar" id="sidebar">
+        <button class="close-btn" onclick="toggleSidebar()">Close</button>
+        <div class="question-grid" id="question-grid"></div>
     </div>
+
+    <main>
+        <div id="quiz-container"></div>
+    </main>
 
     <script>
         let currentQuestionIndex = 0;
         let quizData = [];
+        const answeredQuestions = JSON.parse(localStorage.getItem('answeredQuestions')) || {};
+
         const urlParams = new URLSearchParams(window.location.search);
         const title = urlParams.get('title');
         const metaId = urlParams.get('metaId');
@@ -161,83 +147,94 @@
             .then(response => response.json())
             .then(data => {
                 quizData = data;
-                populateSubjectDropdown();
+                generateQuestionGrid();
                 displayQuestion();
-                updateQuestionList();
             })
             .catch(error => console.error('Error fetching the JSON data:', error));
 
-        function populateSubjectDropdown() {
-            const subjectDropdown = document.getElementById('subject-dropdown');
-            quizData.forEach((subject, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = subject.title;
-                subjectDropdown.appendChild(option);
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function generateQuestionGrid() {
+            const questionGrid = document.getElementById('question-grid');
+            questionGrid.innerHTML = '';
+
+            const subjectIndex = 0;
+            const subject = quizData[subjectIndex];
+
+            subject.questions.forEach((_, index) => {
+                const btn = document.createElement('button');
+                btn.textContent = index + 1;
+                btn.onclick = () => {
+                    currentQuestionIndex = index;
+                    displayQuestion();
+                    toggleSidebar();
+                };
+                if (answeredQuestions[index]) {
+                    btn.classList.add('answered');
+                }
+                questionGrid.appendChild(btn);
             });
-            subjectDropdown.onchange = () => {
-                currentQuestionIndex = 0;
-                displayQuestion();
-            };
         }
 
         function displayQuestion() {
             const quizContainer = document.getElementById('quiz-container');
-            quizContainer.innerHTML = "";
-            const subjectIndex = document.getElementById('subject-dropdown').value || 0;
-            const questions = quizData[subjectIndex].questions;
+            quizContainer.innerHTML = '';
 
-            if (questions.length === 0) return;
+            const subjectIndex = 0;
+            const subject = quizData[subjectIndex];
 
-            const questionObj = questions[currentQuestionIndex];
-            const questionDiv = document.createElement("div");
-            questionDiv.classList.add("question");
+            const question = subject.questions[currentQuestionIndex];
 
-            questionDiv.innerHTML = `
-                <div class="question-number">Q${currentQuestionIndex + 1}: ${questionObj.question}</div>
+            const questionElement = document.createElement('div');
+            questionElement.className = 'question';
+
+            questionElement.innerHTML = `
+                <div class="question-number">Question ${currentQuestionIndex + 1}:</div>
+                <div class="question-content">${question.content}</div>
                 <ul class="options">
-                    ${questionObj.options.map((option, index) => `
-                        <li onclick="selectAnswer(${index}, '${questionObj.correctAnswer}')">${option}</li>
-                    `).join('')}
+                    ${question.options.map(option => `
+                        <li onclick="selectOption(${currentQuestionIndex}, '${option.identifier}')">
+                            ${option.content}
+                        </li>`).join('')}
                 </ul>
-                <button class="explanation-button" onclick="toggleExplanation()">Show Explanation</button>
-                <div class="explanation-content">${questionObj.explanation}</div>
+                <button onclick="showAnswer(${currentQuestionIndex})">Submit</button>
+                <div class="correct-answer" id="answer-feedback-${currentQuestionIndex}"></div>
             `;
-            quizContainer.appendChild(questionDiv);
+
+            quizContainer.appendChild(questionElement);
+
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
 
-        function selectAnswer(selectedIndex, correctAnswer) {
-            const options = document.querySelectorAll('.options li');
-            options.forEach((option, index) => {
-                option.style.backgroundColor = (index == selectedIndex) ? "#ffcccb" : "";
-                if (option.innerText === correctAnswer) {
-                    option.style.backgroundColor = "#90EE90";
+        function selectOption(questionIndex, selectedValue) {
+            answeredQuestions[questionIndex] = selectedValue;
+            localStorage.setItem('answeredQuestions', JSON.stringify(answeredQuestions));
+            generateQuestionGrid();
+        }
+
+        function showAnswer(questionIndex) {
+            const subjectIndex = 0;
+            const subject = quizData[subjectIndex];
+            const question = subject.questions[questionIndex];
+            const correctOptionValue = question.correct_options[0];
+            const selectedOption = answeredQuestions[questionIndex];
+
+            const feedback = document.getElementById(`answer-feedback-${questionIndex}`);
+            if (selectedOption) {
+                if (selectedOption === correctOptionValue) {
+                    feedback.innerHTML = "You are correct!";
+                    feedback.style.color = 'green';
+                } else {
+                    feedback.innerHTML = `Wrong answer! The correct answer is: Option ${correctOptionValue}`;
+                    feedback.style.color = 'red';
                 }
-            });
+            } else {
+                feedback.innerHTML = `You did not select an option. The correct answer is: Option ${correctOptionValue}`;
+                feedback.style.color = 'red';
+            }
         }
-
-        function toggleExplanation() {
-            const explanationDiv = document.querySelector('.explanation-content');
-            explanationDiv.classList.toggle('open');
-        }
-
-        function updateQuestionList() {
-            const questionList = document.getElementById('question-list');
-            questionList.innerHTML = '';
-            quizData[0].questions.forEach((_, index) => {
-                const number = document.createElement('div');
-                number.textContent = index + 1;
-                number.onclick = () => {
-                    currentQuestionIndex = index;
-                    displayQuestion();
-                };
-                questionList.appendChild(number);
-            });
-        }
-
-        document.querySelector('.open-slide-menu').onclick = () => {
-            document.getElementById('menu').classList.toggle('active');
-        };
     </script>
 </body>
 </html>
