@@ -15,167 +15,75 @@
             margin: 0;
             padding: 0;
         }
-
         main {
             margin-top: 80px;
             padding: 20px;
         }
-
         .quiz-title {
             font-size: 1.5em;
             margin: 5px 0;
             color: #333;
             text-align: center;
             border: 2px solid black;
+            padding: 10px;
         }
-
         .question {
             margin-bottom: 30px;
-            padding: 3px;
-            border-bottom: 1px solid #ccc;
-            overflow-x: auto;
-            word-wrap: break-word;
-            white-space: normal;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: white;
+            border-radius: 5px;
         }
-
         .question-number {
             font-weight: bold;
             font-size: 1.2em;
             color: #333;
             margin-bottom: 10px;
         }
-
-        .question-content {
-            margin-bottom: 15px;
-            word-wrap: break-word;
-            white-space: normal;
-            max-width: 100%;
-            overflow-x: auto;
-        }
-
         .options li {
             margin-bottom: 10px;
             border: 1px solid #ccc;
             padding: 10px;
             border-radius: 5px;
-            overflow-x: auto;
-            word-wrap: break-word;
-            white-space: normal;
-        }
-
-        .options label {
+            background: white;
             cursor: pointer;
-            display: flex;
-            align-items: center;
         }
-
-        .options input[type="radio"] {
-            margin-right: 10px;
+        .options li:hover {
+            background-color: #f1f1f1;
         }
-
-        .question-id {
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #555;
-        }
-
         .correct-answer {
             margin-top: 10px;
             font-weight: bold;
             color: green;
         }
-
         #subject-dropdown {
             display: block;
             margin: 20px auto;
             padding: 10px;
             font-size: 1em;
         }
-
-        img {
-            max-width: 100px;
-            height: auto;
-        }
-
         .explanation-button {
             margin-top: 10px;
-            background-color: #ffffff;
-            color: black;
-            border: 2px solid #ccc;
+            background-color: #007bff;
+            color: white;
+            border: none;
             cursor: pointer;
             padding: 8px 16px;
             font-size: 1em;
             border-radius: 5px;
-            text-align: center;
         }
-
         .explanation-button:hover {
-            background-color: #f1f1f1;
-            color: #000;
+            background-color: #0056b3;
         }
-
         .explanation-content {
             margin-top: 10px;
             font-style: italic;
             color: #777;
             display: none;
         }
-
         .explanation-content.open {
-            background-color: #FFF59D;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            font-style: italic;
-            color: #777;
             display: block;
         }
-
-        .navigation-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            margin-bottom: 30px;
-            padding: 10px;
-        }
-
-        .navigation-buttons button {
-            padding: 12px 24px;
-            font-size: 1.1em;
-            border-radius: 5px;
-            cursor: pointer;
-            border: 1px solid #ccc;
-            background-color: #007bff;
-            color: white;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .navigation-buttons button:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
-
-        .navigation-buttons button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .navigation-buttons button:first-child {
-            background-color: #dc3545;
-        }
-
-        .navigation-buttons button:last-child {
-            background-color: #28a745;
-        }
-
-        .navigation-buttons button:first-child:hover {
-            background-color: #c82333;
-        }
-
-        .navigation-buttons button:last-child:hover {
-            background-color: #218838;
-        }
-
         /* Slide Menu */
         #menu {
             position: fixed;
@@ -189,12 +97,10 @@
             transition: right 0.3s ease;
             display: none;
         }
-
         #menu.active {
             display: block;
             right: 0;
         }
-
         /* Grid for Question Navigation */
         #question-list {
             display: grid;
@@ -202,7 +108,6 @@
             gap: 5px;
             padding: 10px;
         }
-
         #question-list div {
             text-align: center;
             background-color: #444;
@@ -211,11 +116,9 @@
             border-radius: 5px;
             color: white;
         }
-
         #question-list div:hover {
             background-color: #555;
         }
-
         /* Grid Menu Toggle Button */
         .open-slide-menu {
             position: fixed;
@@ -228,18 +131,15 @@
             border-radius: 50%;
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
         }
-
     </style>
 </head>
 <body>
     <div class="quiz-title" id="quiz-title"></div>
     <select id="subject-dropdown"></select>
     <div id="quiz-container"></div>
-
     <div id="menu">
         <div id="question-list"></div>
     </div>
-
     <div class="open-slide-menu">
         <i class="fas fa-th"></i>
     </div>
@@ -250,7 +150,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const title = urlParams.get('title');
         const metaId = urlParams.get('metaId');
-        let userResponses = JSON.parse(localStorage.getItem('userResponses')) || {};
 
         if (title) {
             document.getElementById('quiz-title').textContent = title;
@@ -264,6 +163,7 @@
                 quizData = data;
                 populateSubjectDropdown();
                 displayQuestion();
+                updateQuestionList();
             })
             .catch(error => console.error('Error fetching the JSON data:', error));
 
@@ -279,6 +179,46 @@
                 currentQuestionIndex = 0;
                 displayQuestion();
             };
+        }
+
+        function displayQuestion() {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = "";
+            const subjectIndex = document.getElementById('subject-dropdown').value || 0;
+            const questions = quizData[subjectIndex].questions;
+
+            if (questions.length === 0) return;
+
+            const questionObj = questions[currentQuestionIndex];
+            const questionDiv = document.createElement("div");
+            questionDiv.classList.add("question");
+
+            questionDiv.innerHTML = `
+                <div class="question-number">Q${currentQuestionIndex + 1}: ${questionObj.question}</div>
+                <ul class="options">
+                    ${questionObj.options.map((option, index) => `
+                        <li onclick="selectAnswer(${index}, '${questionObj.correctAnswer}')">${option}</li>
+                    `).join('')}
+                </ul>
+                <button class="explanation-button" onclick="toggleExplanation()">Show Explanation</button>
+                <div class="explanation-content">${questionObj.explanation}</div>
+            `;
+            quizContainer.appendChild(questionDiv);
+        }
+
+        function selectAnswer(selectedIndex, correctAnswer) {
+            const options = document.querySelectorAll('.options li');
+            options.forEach((option, index) => {
+                option.style.backgroundColor = (index == selectedIndex) ? "#ffcccb" : "";
+                if (option.innerText === correctAnswer) {
+                    option.style.backgroundColor = "#90EE90";
+                }
+            });
+        }
+
+        function toggleExplanation() {
+            const explanationDiv = document.querySelector('.explanation-content');
+            explanationDiv.classList.toggle('open');
         }
 
         function updateQuestionList() {
