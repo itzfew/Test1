@@ -94,8 +94,16 @@ main {
 }
 
 img {
-    max-width: 100px;
+    max-width: 80px;  /* Limit image size */
     height: auto;
+    max-height: 80px; /* Limit height to maintain aspect ratio */
+}
+
+/* Apply smaller size to images within question, options, and other content */
+.question-content img,
+.options img {
+    max-width: 50px;
+    max-height: 50px;
 }
 
 .explanation-button {
