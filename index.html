@@ -98,38 +98,6 @@ img {
     height: auto;
 }
 
-.submit-button, .next-button, .previous-button {
-    background-color: #28a745;
-    color: white;
-    padding: 12px 20px;
-    border: 1px solid white;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    font-size: 1.1em;
-    width: auto;
-    margin: 10px;
-    display: inline-block;
-}
-
-.submit-button {
-    background-color: #007bff;
-}
-
-.next-button {
-    background-color: #ffc107;
-}
-
-.previous-button {
-    background-color: #dc3545;
-}
-
-.submit-button:hover, .next-button:hover, .previous-button:hover {
-    background-color: #0056b3;
-    color: white;
-    transition: 0.3s;
-}
-
 .explanation-button {
     margin-top: 10px;
     background-color: #ffffff;
@@ -187,21 +155,55 @@ img {
     position: relative;
 }
 
-/* Ensure buttons stay on the page without overlap or hiding */
-.submit-button,
-.next-button,
-.previous-button {
-    position: fixed;
-    bottom: 20px;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    text-align: center;
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding: 10px;
 }
 
-.submit-button {
-    background-color: #000;
+.navigation-buttons button {
+    padding: 12px 24px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s, transform 0.3s;
 }
+
+.navigation-buttons button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.navigation-buttons button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.navigation-buttons button:focus {
+    outline: none;
+}
+
+.navigation-buttons button:first-child {
+    background-color: #dc3545; /* Red for Previous */
+}
+
+.navigation-buttons button:last-child {
+    background-color: #28a745; /* Green for Submit */
+}
+
+.navigation-buttons button:first-child:hover {
+    background-color: #c82333; /* Darker Red for Previous */
+}
+
+.navigation-buttons button:last-child:hover {
+    background-color: #218838; /* Darker Green for Submit */
+}
+
 
 @media (max-width: 600px) {
     body {
