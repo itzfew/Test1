@@ -22,14 +22,28 @@
             color: #333;
             text-align: center;
             border: 2px solid black;
+            padding: 5px;
+        }
+
+        .grid-toggle {
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 1.2em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            width: 100%;
         }
 
         #question-grid {
-            display: flex;
+            display: none;
             flex-wrap: wrap;
             justify-content: center;
             margin-bottom: 20px;
             padding: 10px;
+            background: white;
+            border-bottom: 2px solid #ccc;
         }
 
         .question-number-box {
@@ -130,11 +144,6 @@
             display: block;
         }
 
-        .correct-answer {
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
         .navigation-buttons {
             display: flex;
             justify-content: space-between;
@@ -166,8 +175,14 @@
 </head>
 <body>
     <div class="quiz-title" id="quiz-title"></div>
+    <button class="grid-toggle" onclick="toggleGrid()"><i class="fa fa-th"></i> Toggle Grid</button>
     <div id="question-grid"></div>
     <div id="quiz-container"></div>
+    <div class="navigation-buttons">
+        <button id="prevBtn" onclick="prevQuestion()">Previous</button>
+        <button id="submitBtn" onclick="submitQuiz()">Submit</button>
+        <button id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
 
     <script>
         let currentQuestionIndex = 0;
@@ -192,6 +207,11 @@
                 displayQuestion();
             })
             .catch(error => console.error('Error fetching the JSON data:', error));
+
+        function toggleGrid() {
+            const grid = document.getElementById('question-grid');
+            grid.style.display = grid.style.display === 'flex' ? 'none' : 'flex';
+        }
 
         function generateQuestionGrid() {
             const gridContainer = document.getElementById('question-grid');
@@ -223,50 +243,32 @@
 
             document.querySelectorAll('.question-number-box')[currentQuestionIndex].classList.add('current-question');
 
-            const questionElement = document.createElement('div');
-            questionElement.className = 'question';
-            questionElement.innerHTML = `
-                <div class="question-number">Question ${currentQuestionIndex + 1}:</div>
-                <div class="question-content">${question.content}</div>
-                <ul class="options">
-                    ${question.options.map(option => `
-                        <li onclick="checkAnswer('${option.identifier}', '${question.correct_options[0]}')">
-                            <input type="radio" name="question${question.question_id}" value="${option.identifier}">
-                            ${option.content}
-                        </li>
-                    `).join('')}
-                </ul>
-                <button class="explanation-button" onclick="toggleExplanation(this)">Show Explanation</button>
-                <div class="explanation-content">Explanation: ${question.explanation || 'No explanation available.'}</div>
+            quizContainer.innerHTML = `
+                <div class="question">
+                    <div class="question-number">Question ${currentQuestionIndex + 1}:</div>
+                    <div class="question-content">${question.content}</div>
+                </div>
             `;
-
-            quizContainer.appendChild(questionElement);
 
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
 
-        function toggleExplanation(button) {
-            const explanation = button.nextElementSibling;
-            explanation.classList.toggle('open');
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion();
+            }
         }
 
-        function checkAnswer(selectedOption, correctOption) {
-            const options = document.querySelectorAll(`input[name="question${quizData[currentQuestionIndex].question_id}"]`);
-            options.forEach(option => {
-                const optionItem = option.closest('li');
-                optionItem.style.pointerEvents = 'none';
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            }
+        }
 
-                if (option.value === correctOption) {
-                    optionItem.style.backgroundColor = 'green';
-                    optionItem.style.color = 'white';
-                } else if (option.checked) {
-                    optionItem.style.backgroundColor = 'red';
-                    optionItem.style.color = 'white';
-                }
-            });
-
-            questionStatus[currentQuestionIndex] = selectedOption === correctOption ? 'correct' : 'incorrect';
-            generateQuestionGrid();
+        function submitQuiz() {
+            alert('Quiz submitted!');
         }
     </script>
 </body>
