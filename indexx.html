@@ -4,135 +4,168 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Quiz Game</title>
+    
+    <!-- MathJax for rendering equations -->
     <script type="text/javascript" async
         src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
     </script>
+
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-        }
-
-        .header {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            background-color: #007bff;
-            color: white;
-            padding: 10px;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-
-        .menu-icon {
-            font-size: 1.5em;
-            cursor: pointer;
-            margin-right: 10px;
         }
 
         .quiz-title {
-            flex-grow: 1;
+            font-size: 1.8em;
+            margin: 10px;
+            color: #333;
             text-align: center;
-            font-size: 1.5em;
-        }
-
-        .sidebar {
-            position: fixed;
-            left: -250px;
-            top: 0;
-            width: 250px;
-            height: 100%;
-            background-color: #333;
-            color: white;
-            overflow-y: auto;
-            padding: 20px;
-            transition: 0.3s;
-        }
-
-        .sidebar.open {
-            left: 0;
-        }
-
-        .question-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-            gap: 10px;
-        }
-
-        .question-grid button {
+            border: 2px solid black;
             padding: 10px;
-            background-color: #444;
-            color: white;
-            border: none;
-            cursor: pointer;
-            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            background-color: #fff;
         }
 
-        .question-grid button.answered {
-            background-color: green;
+        #subject-dropdown {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 1.1em;
         }
 
-        .close-btn {
-            background: red;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            margin-bottom: 10px;
-            width: 100%;
-        }
-
-        main {
-            margin-top: 60px;
+        #quiz-container {
+            width: 90%;
+            max-width: 700px;
+            background-color: white;
             padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
 
         .question {
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            padding: 15px;
+            border-bottom: 2px solid #ccc;
+            word-wrap: break-word;
+        }
+
+        .question-number {
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #333;
+        }
+
+        .question-content {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            list-style: none;
+            padding: 0;
         }
 
         .options li {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 2px solid #ccc;
             border-radius: 5px;
+            font-size: 1.1em;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        .correct-answer {
+        .options li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .explanation-button {
             margin-top: 10px;
-            font-weight: bold;
-            color: green;
+            background-color: white;
+            color: black;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .explanation-button i {
+            margin-left: 8px;
+        }
+
+        .explanation-content {
+            margin-top: 10px;
+            font-style: italic;
+            color: #777;
+            display: none;
+            background-color: #FFF59D;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .navigation-buttons button {
+            padding: 12px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .prev-button { background-color: #dc3545; }
+        .prev-button:hover { background-color: #c82333; }
+
+        .next-button { background-color: #007bff; }
+        .next-button:hover { background-color: #0056b3; }
+
+        .submit-button { background-color: #28a745; }
+        .submit-button:hover { background-color: #218838; }
+
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <i class="fas fa-th menu-icon" onclick="toggleSidebar()"></i>
-        <div class="quiz-title" id="quiz-title"></div>
-    </div>
 
-    <div class="sidebar" id="sidebar">
-        <button class="close-btn" onclick="toggleSidebar()">Close</button>
-        <div class="question-grid" id="question-grid"></div>
-    </div>
-
-    <main>
-        <div id="quiz-container"></div>
-    </main>
+    <div class="quiz-title" id="quiz-title"></div>
+    <select id="subject-dropdown"></select>
+    <div id="quiz-container"></div>
 
     <script>
         let currentQuestionIndex = 0;
         let quizData = [];
-        const answeredQuestions = JSON.parse(localStorage.getItem('answeredQuestions')) || {};
-
         const urlParams = new URLSearchParams(window.location.search);
         const title = urlParams.get('title');
         const metaId = urlParams.get('metaId');
@@ -147,42 +180,31 @@
             .then(response => response.json())
             .then(data => {
                 quizData = data;
-                generateQuestionGrid();
+                populateSubjectDropdown();
                 displayQuestion();
             })
-            .catch(error => console.error('Error fetching the JSON data:', error));
+            .catch(error => console.error('Error fetching the JSON:', error));
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
-
-        function generateQuestionGrid() {
-            const questionGrid = document.getElementById('question-grid');
-            questionGrid.innerHTML = '';
-
-            const subjectIndex = 0;
-            const subject = quizData[subjectIndex];
-
-            subject.questions.forEach((_, index) => {
-                const btn = document.createElement('button');
-                btn.textContent = index + 1;
-                btn.onclick = () => {
-                    currentQuestionIndex = index;
-                    displayQuestion();
-                    toggleSidebar();
-                };
-                if (answeredQuestions[index]) {
-                    btn.classList.add('answered');
-                }
-                questionGrid.appendChild(btn);
+        function populateSubjectDropdown() {
+            const subjectDropdown = document.getElementById('subject-dropdown');
+            quizData.forEach((subject, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = subject.title;
+                subjectDropdown.appendChild(option);
             });
+
+            subjectDropdown.onchange = () => {
+                currentQuestionIndex = 0;
+                displayQuestion();
+            };
         }
 
         function displayQuestion() {
             const quizContainer = document.getElementById('quiz-container');
             quizContainer.innerHTML = '';
 
-            const subjectIndex = 0;
+            const subjectIndex = document.getElementById('subject-dropdown').value;
             const subject = quizData[subjectIndex];
 
             const question = subject.questions[currentQuestionIndex];
@@ -195,46 +217,37 @@
                 <div class="question-content">${question.content}</div>
                 <ul class="options">
                     ${question.options.map(option => `
-                        <li onclick="selectOption(${currentQuestionIndex}, '${option.identifier}')">
+                        <li>
+                            <input type="radio" name="question${question.id}" value="${option.identifier}">
                             ${option.content}
                         </li>`).join('')}
                 </ul>
-                <button onclick="showAnswer(${currentQuestionIndex})">Submit</button>
-                <div class="correct-answer" id="answer-feedback-${currentQuestionIndex}"></div>
+                <button class="explanation-button" onclick="toggleExplanation(this)">
+                    Show Explanation <i class="fa fa-info-circle"></i>
+                </button>
+                <div class="explanation-content">${question.explanation || 'No explanation available.'}</div>
             `;
 
             quizContainer.appendChild(questionElement);
 
+            quizContainer.innerHTML += `
+                <div class="navigation-buttons">
+                    <button class="prev-button" onclick="prevQuestion()" ${currentQuestionIndex === 0 ? 'disabled' : ''}>
+                        <i class="fa fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="next-button" onclick="nextQuestion()">
+                        Next <i class="fa fa-arrow-right"></i>
+                    </button>
+                </div>
+            `;
+
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
 
-        function selectOption(questionIndex, selectedValue) {
-            answeredQuestions[questionIndex] = selectedValue;
-            localStorage.setItem('answeredQuestions', JSON.stringify(answeredQuestions));
-            generateQuestionGrid();
-        }
+        function prevQuestion() { currentQuestionIndex--; displayQuestion(); }
+        function nextQuestion() { currentQuestionIndex++; displayQuestion(); }
+        function toggleExplanation(button) { button.nextElementSibling.classList.toggle('open'); }
 
-        function showAnswer(questionIndex) {
-            const subjectIndex = 0;
-            const subject = quizData[subjectIndex];
-            const question = subject.questions[questionIndex];
-            const correctOptionValue = question.correct_options[0];
-            const selectedOption = answeredQuestions[questionIndex];
-
-            const feedback = document.getElementById(`answer-feedback-${questionIndex}`);
-            if (selectedOption) {
-                if (selectedOption === correctOptionValue) {
-                    feedback.innerHTML = "You are correct!";
-                    feedback.style.color = 'green';
-                } else {
-                    feedback.innerHTML = `Wrong answer! The correct answer is: Option ${correctOptionValue}`;
-                    feedback.style.color = 'red';
-                }
-            } else {
-                feedback.innerHTML = `You did not select an option. The correct answer is: Option ${correctOptionValue}`;
-                feedback.style.color = 'red';
-            }
-        }
     </script>
 </body>
 </html>
