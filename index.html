@@ -3,21 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Live Stream</title>
+    <title>🔴 Live Streaming</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #000;
+            background: black;
             color: white;
             text-align: center;
             margin: 0;
             padding: 0;
+        }
+        #live-label {
+            background: red;
+            color: white;
+            display: inline-block;
+            padding: 5px 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-top: 10px;
         }
         #video-container {
             width: 80%;
             max-width: 800px;
             margin: auto;
             padding: 20px;
+            position: relative;
         }
         video {
             width: 100%;
@@ -25,13 +37,27 @@
             border-radius: 10px;
             outline: none;
         }
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <h1>🔴 Auto Live Stream</h1>
+    <h1>🔴 Live Streaming</h1>
+    <div id="live-label">🔴 LIVE</div>
+    
     <div id="video-container">
-        <video id="livestream" controls autoplay></video>
+        <div id="loading">🔄 Loading next video...</div>
+        <video id="livestream" autoplay muted></video>
     </div>
 
     <script>
@@ -42,6 +68,7 @@
             try {
                 const response = await fetch('videos.json');
                 videos = await response.json();
+                videos = shuffleArray(videos); // Shuffle for a live effect
                 playVideo();
             } catch (error) {
                 console.error("Error loading video list:", error);
@@ -52,13 +79,24 @@
             if (videos.length === 0) return;
             
             const videoElement = document.getElementById('livestream');
-            videoElement.src = videos[videoIndex];
-            videoElement.play();
+            const loading = document.getElementById('loading');
+
+            loading.style.display = "block";  // Show loading before switching
+
+            setTimeout(() => {
+                videoElement.src = videos[videoIndex];
+                videoElement.play();
+                loading.style.display = "none"; // Hide loading once video starts
+            }, 3000); // 3 sec delay for smooth transition
             
             videoElement.onended = () => {
                 videoIndex = (videoIndex + 1) % videos.length;
                 playVideo();
             };
+        }
+
+        function shuffleArray(array) {
+            return array.sort(() => Math.random() - 0.5);
         }
 
         loadVideos();
