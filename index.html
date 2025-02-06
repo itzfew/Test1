@@ -53,6 +53,22 @@ main {
     max-width: 100%;
     overflow-x: auto;
 }
+/* Ensure all images within questions and explanations have a maximum width */
+.question-content img, .explanation-content img {
+    max-width: 70%;  /* Limit the image width to 70% of the container */
+    height: auto;    /* Maintain aspect ratio */
+    display: block;  /* Make the image block-level to center it */
+    margin: 0 auto;  /* Center the image horizontally */
+    max-height: 40vh; /* Limit the height of the image to 40% of the viewport height */
+    vertical-align: baseline; /* Align image with text */
+}
+
+/* Optional: If you want to apply a lightbox or hover effect */
+.question-content img:hover, .explanation-content img:hover {
+    cursor: pointer;
+    opacity: 0.8; /* Slightly fade image when hovered */
+    transition: opacity 0.3s ease; /* Smooth hover transition */
+}
 
 .options li {
     margin-bottom: 10px;
