@@ -3,103 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔴 Live Streaming</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <title>Interactive Quiz Game</title>
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: black;
-            color: white;
+            background-color: #f4f4f4;
             text-align: center;
             margin: 0;
+            padding: 20px;
+        }
+        .quiz-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .question-container {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px #ccc;
+            max-width: 600px;
+            margin: auto;
+            display: none;
+        }
+        .question-number {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .options {
+            list-style: none;
             padding: 0;
         }
-        #live-label {
-            background: red;
-            color: white;
-            display: inline-block;
-            padding: 5px 15px;
-            font-size: 18px;
-            font-weight: bold;
+        .options li {
+            padding: 10px;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            margin-top: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
         }
-        #video-container {
-            width: 80%;
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-            position: relative;
+        .options input {
+            margin-right: 10px;
         }
-        video {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            outline: none;
+        .buttons {
+            margin-top: 20px;
         }
-        #loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px 20px;
-            border-radius: 10px;
+        .buttons button {
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .prev-btn {
+            background-color: #555;
+            color: white;
+        }
+        .next-btn {
+            background-color: #007BFF;
+            color: white;
+        }
+        .submit-btn {
+            background-color: green;
+            color: white;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 10px;
+            background: #FFF59D;
             display: none;
+            border-radius: 5px;
+        }
+        .correct-answer {
+            font-weight: bold;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
-    <h1>🔴 Live Streaming</h1>
-    <div id="live-label">🔴 LIVE</div>
-    
-    <div id="video-container">
-        <div id="loading">🔄 Loading next video...</div>
-        <video id="livestream" autoplay muted></video>
+    <div class="quiz-title" id="quiz-title">Quiz</div>
+    <div id="quiz-container"></div>
+    <div class="buttons">
+        <button class="prev-btn" onclick="prevQuestion()">Previous</button>
+        <button class="next-btn" onclick="nextQuestion()">Next</button>
     </div>
 
     <script>
-        let videoIndex = 0;
-        let videos = [];
+        let currentQuestionIndex = 0;
+        let quizData = [];
+        const urlParams = new URLSearchParams(window.location.search);
+        const title = urlParams.get('title');
+        const metaId = urlParams.get('metaId');
 
-        async function loadVideos() {
-            try {
-                const response = await fetch('videos.json');
-                videos = await response.json();
-                videos = shuffleArray(videos); // Shuffle for a live effect
-                playVideo();
-            } catch (error) {
-                console.error("Error loading video list:", error);
+        if (title) {
+            document.getElementById('quiz-title').textContent = title;
+        }
+
+        const jsonUrl = `https://raw.githubusercontent.com/itzfew/Quizes/refs/heads/main/pyq/${metaId}.json`;
+
+        fetch(jsonUrl)
+            .then(response => response.json())
+            .then(data => {
+                quizData = data[0].questions;
+                displayQuestion(currentQuestionIndex);
+            })
+            .catch(error => console.error('Error fetching the JSON data:', error));
+
+        function displayQuestion(index) {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = '';
+
+            if (index < 0 || index >= quizData.length) return;
+
+            const question = quizData[index];
+            const questionElement = document.createElement('div');
+            questionElement.className = 'question-container';
+
+            questionElement.innerHTML = `
+                <div class="question-number">Question ${index + 1}:</div>
+                <div class="question-content">${question.content}</div>
+                <ul class="options">
+                    ${question.options.map(option => `
+                        <li>
+                            <label>
+                                <input type="radio" name="question${question.question_id}" value="${option.identifier}">
+                                ${option.content}
+                            </label>
+                        </li>
+                    `).join('')}
+                </ul>
+                <button class="submit-btn" onclick="submitAnswer(${index})">Submit</button>
+                <div class="explanation" id="explanation-${index}"></div>
+            `;
+
+            quizContainer.appendChild(questionElement);
+            questionElement.style.display = 'block';
+
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function submitAnswer(index) {
+            const selectedOption = document.querySelector(`input[name="question${quizData[index].question_id}"]:checked`);
+            const explanationDiv = document.getElementById(`explanation-${index}`);
+
+            if (!selectedOption) {
+                explanationDiv.innerHTML = "Please select an answer.";
+                explanationDiv.style.display = 'block';
+                return;
+            }
+
+            const correctOption = quizData[index].correct_options[0];
+
+            if (selectedOption.value === correctOption) {
+                explanationDiv.innerHTML = `<span class="correct-answer" style="color: green;">Correct!</span>`;
+            } else {
+                explanationDiv.innerHTML = `<span class="correct-answer" style="color: red;">Incorrect! Correct answer: Option ${correctOption}</span>`;
+            }
+
+            explanationDiv.innerHTML += `<br>Explanation: ${quizData[index].explanation || 'No explanation available.'}`;
+            explanationDiv.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
             }
         }
 
-        function playVideo() {
-            if (videos.length === 0) return;
-            
-            const videoElement = document.getElementById('livestream');
-            const loading = document.getElementById('loading');
-
-            loading.style.display = "block";  // Show loading before switching
-
-            setTimeout(() => {
-                videoElement.src = videos[videoIndex];
-                videoElement.play();
-                loading.style.display = "none"; // Hide loading once video starts
-            }, 3000); // 3 sec delay for smooth transition
-            
-            videoElement.onended = () => {
-                videoIndex = (videoIndex + 1) % videos.length;
-                playVideo();
-            };
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion(currentQuestionIndex);
+            }
         }
-
-        function shuffleArray(array) {
-            return array.sort(() => Math.random() - 0.5);
-        }
-
-        loadVideos();
     </script>
 
 </body>
