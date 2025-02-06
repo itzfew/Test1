@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Live Stream</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        #video-container {
+            width: 80%;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        video {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🔴 Auto Live Stream</h1>
+    <div id="video-container">
+        <video id="livestream" controls autoplay></video>
+    </div>
+
+    <script>
+        let videoIndex = 0;
+        let videos = [];
+
+        async function loadVideos() {
+            try {
+                const response = await fetch('videos.json');
+                videos = await response.json();
+                playVideo();
+            } catch (error) {
+                console.error("Error loading video list:", error);
+            }
+        }
+
+        function playVideo() {
+            if (videos.length === 0) return;
+            
+            const videoElement = document.getElementById('livestream');
+            videoElement.src = videos[videoIndex];
+            videoElement.play();
+            
+            videoElement.onended = () => {
+                videoIndex = (videoIndex + 1) % videos.length;
+                playVideo();
+            };
+        }
+
+        loadVideos();
+    </script>
+
+</body>
+</html>
